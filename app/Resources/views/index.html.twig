@@ -33,7 +33,7 @@
             {% for item in data %}
                 <tr>
                     <td>
-                        <a href="" style="color: blue" class="js-monitor">Мониторинг</a> <br>
+                        <a href="monitoring/{{ item.hash }}" style="color: blue" class="js-monitor">Мониторинг</a> <br>
                         <a href="/delete/{{ item.hash }}" style="color: red" class="js-delete">Удалить</a>
                     </td>
                     <td>{{ item.name }}</td>

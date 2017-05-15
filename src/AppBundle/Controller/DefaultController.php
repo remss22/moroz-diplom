@@ -79,19 +79,16 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/monitoring/{id}", name="monitoring", requirements={"id": "\d+"})
+     * @Route("/monitoring/{hash}", name="monitoring", requirements={"hash": "\w+"})
      */
-    public function monitoringAction(Request $request)
+    public function monitoringAction(Request $request, $hash)
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-        ]);
+        return $this->render('monitoring.html.twig', []);
 
     }
 
     /**
-     * @Route("/delete/{hash}", name="delete", requirements={"id": "\w+"})
+     * @Route("/delete/{hash}", name="delete", requirements={"hash": "\w+"})
      */
     public function deleteAction(Request $request, $hash)
     {
@@ -102,10 +99,7 @@ class DefaultController extends Controller
         $em->flush();
 
         $this->_getRepository();
-
-        $data = ['data' => $this->_sensorRepository->getSensors([])];
-
-        return $this->render('index.html.twig', $data);
+        return $this->redirectToRoute('show');
 
     }
 }

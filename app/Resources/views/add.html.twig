@@ -38,8 +38,8 @@
                 $("#js-submit-registration-form").notify("Данные введены некорректно", "error");
                 return;
             }
-            if (max < min) {
-                $("#js-submit-registration-form").notify("Минимальное значение меньше максимального", "error");
+            if ( max < min) {
+                $("#js-submit-registration-form").notify("Минимальное значение больше максимального", "error");
                 return;
             }
             $.post( "add-sensor", { name: name, max: max, min: min}, function( data ) {
