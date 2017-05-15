@@ -1,0 +1,43 @@
+{% include 'header.html.twig' %}
+
+{% block body %}
+    <div class="col-xs-12 col-md-7 col-lg-7">
+        <div class="form-control-required">
+            <div class="form-group clearfix has-feedback" style="width: 100%">
+                <label style="padding-right: 5px"><small>Название датчика <span style="color: red">*</span></small></label>
+                <div style="position: relative">
+                    <input type="text" class="form-control" id="name" name="name" value="" placeholder="Название датчика" style="width: 40%" required=""><i class="form-control-feedback" data-bv-icon-for="email" style="display: none;"></i>
+                </div>
+            <div class="form-group clearfix has-feedback" style="width: 100%">
+                <label style="padding-right: 5px"><small>Пароль <span style="color: red">*</span></small></label>
+                <div style="position: relative">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Придумайте пароль" style="width: 40%" required="" data-bv-field="password"><i class="form-control-feedback" data-bv-icon-for="password" style="display: none;"></i>
+                </div>
+                <small class="help-block" data-bv-validator="notEmpty" data-bv-for="password" data-bv-result="NOT_VALIDATED" style="display: none;">Укажите пароль, чтобы закончить регистрацию</small></div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success m-t-10 m-b-20" id="js-submit-registration-form">Регистрация →</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $( "#js-submit-registration-form" ).click(function() {
+            var name = $("#email").val();
+            var pass = $("#password").val();
+            if (!name || !pass) {
+                return;
+            }
+            $.post( "user-add", { name: name, pass: pass }, function( data ) {
+                if (data.status === 'ok') {
+                    $("#js-submit-registration-form").notify("Аккаунт зарегистрирован", "success");
+                } else {
+                    $("#js-submit-registration-form").notify("Аккаунт с данным логином уже существует", "error");
+                }
+            }, "json");
+        });
+    </script>
+{% endblock %}
+
+{% include 'footer.html.twig' %}
