@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Sensor;
+
 /**
  * SensorRepository
  *
@@ -10,4 +12,27 @@ namespace AppBundle\Repository;
  */
 class SensorRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param array $filter
+     * @return Sensor
+     */
+    public function getSensorByFilter(array $filter) {
+        /**
+         * @var Sensor $sensor
+         */
+        $sensor = $this->findOneBy($filter);
+        return $sensor;
+    }
+
+    /**
+     * @param array $filter
+     * @return Sensor[]
+     */
+    public function getSensors(array $filter) {
+        /**
+         * @var Sensor[] $sensor
+         */
+        $sensor = $this->findBy($filter);
+        return $sensor;
+    }
 }

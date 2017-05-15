@@ -1,2 +1,63 @@
 {% include 'header.html.twig' %}
+
+{% block body %}
+    {#<div class="container">#}
+        {#<input id="datePeriod" style="width: 20%" class="form-control" type="text" name="daterange" value="01/01/2015 - 01/31/2015" />#}
+
+        {#<script type="text/javascript">#}
+            {#$(function() {#}
+                {#$('input[name="daterange"]').daterangepicker(#}
+                    {#{#}
+                        {#locale: {#}
+                            {#format: 'YYYY-MM-DD'#}
+                        {#},#}
+                        {#startDate: '{{ date }}',#}
+                        {#endDate: '{{ date }}'#}
+                    {#});#}
+            {#});#}
+        {#</script>#}
+        {#<button type="submit" class="btn btn-default" id="js-get-log">Загрузить</button>#}
+    {#</div>#}
+    <div class="container js-res">
+        <table class="table table-striped js-table-ajax">
+            <thead class="h3">
+            <tr>
+                <td>Действие</td>
+                <td>Название</td>
+                <td>Хеш</td>
+                <td>Максимальное значение</td>
+                <td>Минимальное значение</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>
+                        <a href="" style="color: blue" class="js-monitor">Мониторинг</a> <br>
+                        <a href="/delete/{{ item.hash }}" style="color: red" class="js-delete">Удалить</a>
+                    </td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.hash }}</td>
+                    <td>{{ item.maxValue }}</td>
+                    <td>{{ item.minValue }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+//        $( "#js-get-log" ).click(function() {
+//            var datePeriod = $("#datePeriod").val();
+//            $.post( "/delete/{hash}", { period: datePeriod}, function( response ) {
+//                if (response.status === 'ok') {
+//                    $('.js-table-ajax').remove();
+//                    $('.js-res').append(response.data );
+//                }
+//            }, "json");
+//        });
+    </script>
+{% endblock %}
 {% include 'footer.html.twig' %}

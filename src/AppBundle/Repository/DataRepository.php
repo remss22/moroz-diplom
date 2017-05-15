@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Data;
+
 /**
  * DataRepository
  *
@@ -10,4 +12,15 @@ namespace AppBundle\Repository;
  */
 class DataRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param array $filter
+     * @return Data[]
+     */
+    public function getDataByFilter(array $filter) {
+        /**
+         * @var Data[] $data
+         */
+        $data = $this->findBy($filter);
+        return $data;
+    }
 }

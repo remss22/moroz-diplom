@@ -8,15 +8,22 @@
                 <div style="position: relative">
                     <input type="text" class="form-control" id="name" name="name" value="" placeholder="Название датчика" style="width: 40%" required=""><i class="form-control-feedback" data-bv-icon-for="email" style="display: none;"></i>
                 </div>
-            <div class="form-group clearfix has-feedback" style="width: 100%">
-                <label style="padding-right: 5px"><small>Пароль <span style="color: red">*</span></small></label>
+                <div class="form-group clearfix has-feedback" style="width: 100%">
+                <label style="padding-right: 5px"><small>Максимальный показатель <span style="color: red">*</span></small></label>
                 <div style="position: relative">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Придумайте пароль" style="width: 40%" required="" data-bv-field="password"><i class="form-control-feedback" data-bv-icon-for="password" style="display: none;"></i>
+                    <input type="text" class="form-control" id="max-val" name="max-val" placeholder="1000" style="width: 40%" required="" ><i class="form-control-feedback" data-bv-icon-for="password" style="display: none;"></i>
                 </div>
-                <small class="help-block" data-bv-validator="notEmpty" data-bv-for="password" data-bv-result="NOT_VALIDATED" style="display: none;">Укажите пароль, чтобы закончить регистрацию</small></div>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success m-t-10 m-b-20" id="js-submit-registration-form">Регистрация →</button>
+                </div>
+                <div class="form-group clearfix has-feedback" style="width: 100%">
+                    <label style="padding-right: 5px"><small>Минимальный показатель <span style="color: red">*</span></small></label>
+                    <div style="position: relative">
+                        <input type="text" class="form-control" id="min-val" name="min-val" placeholder="0" style="width: 40%" required="" ><i class="form-control-feedback" data-bv-icon-for="password" style="display: none;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success m-t-10 m-b-20" id="js-submit-registration-form">Регистрация →</button>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -24,16 +31,22 @@
 {% block js %}
     <script>
         $( "#js-submit-registration-form" ).click(function() {
-            var name = $("#email").val();
-            var pass = $("#password").val();
-            if (!name || !pass) {
+            var name = $("#name").val();
+            var max = $("#max-val").val();
+            var min = $("#min-val").val();
+            if (!name || !max || !min ) {
+                $("#js-submit-registration-form").notify("Данные введены некорректно", "error");
                 return;
             }
-            $.post( "user-add", { name: name, pass: pass }, function( data ) {
+            if (max < min) {
+                $("#js-submit-registration-form").notify("Минимальное значение меньше максимального", "error");
+                return;
+            }
+            $.post( "add-sensor", { name: name, max: max, min: min}, function( data ) {
                 if (data.status === 'ok') {
-                    $("#js-submit-registration-form").notify("Аккаунт зарегистрирован", "success");
+                    $("#js-submit-registration-form").notify("Датчик создан", "success");
                 } else {
-                    $("#js-submit-registration-form").notify("Аккаунт с данным логином уже существует", "error");
+                    $("#js-submit-registration-form").notify(data.message, "error");
                 }
             }, "json");
         });
