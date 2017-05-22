@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Data;
 use AppBundle\Entity\Sensor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -83,8 +84,50 @@ class DefaultController extends Controller
      */
     public function monitoringAction(Request $request, $hash)
     {
-        return $this->render('monitoring.html.twig', []);
+        $this->_getRepository();
+        $sensor = $this->_sensorRepository->getSensorByFilter(['hash' => $hash]);
 
+        return $this->render('monitoring.html.twig', ['hash' => $sensor->getHash(), 'max' => $sensor->getMaxValue(), 'min' => $sensor->getMinValue(), 'name' => $sensor->getName()]);
+
+    }
+
+    /**
+     * @Route("/monitoring/{hash}/getData", name="getData", requirements={"hash": "\w+"})
+     */
+    public function monitoringDataAction(Request $request, $hash)
+    {
+        $this->_getRepository();
+        $data = $this->_dataRepository->getDataByFilter(['hash' => $hash]);
+        $result = [];
+
+        foreach ($data as $dat) {
+            $result[] = $dat->getValue();
+
+        }
+        return new JsonResponse(['data' => $result]);
+    }
+
+    /**
+     * @Route("addData/{hash}", name="addData", requirements={"hash": "\w+"})
+     */
+    public function addDataAction(Request $request, $hash)
+    {
+        $this->_getRepository();
+        $em = $this->getDoctrine()->getManager();
+
+        $data = new Data();
+        $data->setValue(1);
+        $a = 100;
+        while ($a !== 0) {
+            $data = new Data();
+            $data->setValue($a);
+            $data->setHash($hash);
+            $data->setCreationDate(new \DateTime());
+            $a--;
+            $em->persist($data);
+        }
+        $em->flush();
+        return new JsonResponse(['status' => 'ok']);
     }
 
     /**
