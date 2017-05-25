@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Data;
 use AppBundle\Entity\Sensor;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -86,8 +87,12 @@ class DefaultController extends Controller
     {
         $this->_getRepository();
         $sensor = $this->_sensorRepository->getSensorByFilter(['hash' => $hash]);
-
-        return $this->render('monitoring.html.twig', ['hash' => $sensor->getHash(), 'max' => $sensor->getMaxValue(), 'min' => $sensor->getMinValue(), 'name' => $sensor->getName()]);
+        $query = $this->_dataRepository->createQueryBuilder('d')->orderBy('d.id', 'DESC');
+        /**
+         * @var Data[] $data
+         */
+        $data = $query->getQuery()->getResult();
+        return $this->render('monitoring.html.twig', ['sensor' => $sensor, 'data' => $data]);
 
     }
 
@@ -114,18 +119,12 @@ class DefaultController extends Controller
     {
         $this->_getRepository();
         $em = $this->getDoctrine()->getManager();
-
-        $data = new Data();
-        $data->setValue(1);
-        $a = 100;
-        while ($a !== 0) {
-            $data = new Data();
-            $data->setValue($a);
-            $data->setHash($hash);
-            $data->setCreationDate(new \DateTime());
-            $a--;
-            $em->persist($data);
-        }
+        $data = $request->get('data');
+        $dataEntity = new Data();
+        $dataEntity->setValue($data['signal']);
+        $dataEntity->setHash($data['hash']);
+        $dataEntity->setCreationDate(new \DateTime());
+        $em->persist($dataEntity);
         $em->flush();
         return new JsonResponse(['status' => 'ok']);
     }

@@ -1,55 +1,23 @@
 {% include 'header.html.twig' %}
-<script src="{{ asset('jq/jquery.js') }}"></script>
-<script type="text/javascript" src="{{ asset('canvas/canvasjs.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('canvas/jquery.canvasjs.min.js') }}"></script>
-
-<script type="text/javascript">
-        window.onload = function () {
-
-            var dps = []; // dataPoints
-
-            var chart = new CanvasJS.Chart("chartContainer",{
-                title :{
-                    text: "{{ name }}"
-                },
-                data: [{
-                    type: "line",
-                    dataPoints: dps
-                }]
-            });
-            var xVal = 0;
-            var yVal = 0;
-            var updateInterval = 1500;
-            var dataLength = 60;
-
-            var updateChart = function (count) {
-                count = count || 1;
-
-                for (var j = 0; j < count; j++) {
-                    yVal = Math.round( Math.random() *({{ max }} - {{  min }}) + {{ min }});
-                    dps.push({
-                        x: xVal,
-                        y: yVal
-                    });
-                    xVal++;
-                }
-                if (dps.length > dataLength)
-                {
-                    dps.shift();
-                }
-
-                chart.render();
-
-            };
-
-            updateChart(dataLength);
-
-            setInterval(function(){updateChart()}, updateInterval);
-
-        }
-</script>
-
-
-<div id="chartContainer" style="height: 300px; width:100%;">
+<div class="container js-res">
+    <div class="h1">Сохраненные значения для датчика {{ sensor.getName }} </div>
+    <table class="table table-striped js-table-ajax">
+        <thead class="h3">
+        <tr>
+            <td>id</td>
+            <td>value</td>
+            <td>date</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in data %}
+            <tr>
+                <td>{{ item.getId }}</td>
+                <td>{{ item.getValue }}</td>
+                <td>{{ item.getCreationDate.format('Y-m-d H:i:s')}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% include 'footer.html.twig' %}
