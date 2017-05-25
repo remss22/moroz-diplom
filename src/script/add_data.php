@@ -2,11 +2,8 @@
 require __DIR__ . '/../../vendor/autoload.php';
 
 $sensor = $argv[1];
-$sensor = 'c4ca4238a0b923820dcc509a6f75849b';
 $maxValue = $argv[2];
-$maxValue = 500;
 $minValue = $argv[3];
-$minValue = 100;
 $countSignal = isset($argv[4]) ? $argv[4] : 100;
 use \Curl\Curl;
 
