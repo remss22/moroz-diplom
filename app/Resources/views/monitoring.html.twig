@@ -1,6 +1,70 @@
 {% include 'header.html.twig' %}
+<!DOCTYPE HTML>
+<html>
+<body>
+<script type="text/javascript">
+    window.onload = function () {
+
+        var dps = []; // dataPoints
+
+        var chart = new CanvasJS.Chart("chartContainer",{
+            title :{
+                text: "Значения для датчика {{ sensor.getName }}"
+            },
+            data: [{
+                type: "line",
+                dataPoints: dps
+            }]
+        });
+
+        var xVal = 0;
+        var yVal = 100;
+        var updateInterval = 100;
+        var dataLength = 500; // number of dataPoints visible at any point
+
+        var updateChart = function (count) {
+            count = count || 1;
+            // count is number of times loop runs to generate random dataPoints.
+
+            for (var j = 0; j < count; j++) {
+                yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+                dps.push({
+                    x: xVal,
+                    y: yVal
+                });
+                xVal++;
+            };
+            if (dps.length > dataLength)
+            {
+                dps.shift();
+            }
+
+            chart.render();
+
+        };
+
+        // generates first set of dataPoints
+        updateChart(dataLength);
+
+        // update chart after specified time.
+        setInterval(function(){updateChart()}, updateInterval);
+
+    }
+</script>
+<script type="text/javascript" src="/canvas/canvasjs.min.js"></script>
+
+<div class="analog">
+    <div class="container" style="text-align: center">
+    <button class="test btn btn-success m-t-10 m-b-20">Показать график</button>
+    </div>
+    <div id="chartContainer" style="height: 500px; width:100%;">
+
+    </div>
+</div>
+</body>
+</html>
 <div class="container js-res">
-    <div class="h1">Сохраненные значения для датчика {{ sensor.getName }} </div>
+    <div class="h1" style="text-align: center">Сохраненные значения для датчика {{ sensor.getName }} </div>
     <table class="table table-striped js-table-ajax">
         <thead class="h3">
         <tr>
@@ -20,4 +84,15 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    var $block  = $('.test');
+    $block.each(function () {
+        $(this).click(function () {
+            $('#chartContainer').slideToggle("fast");
+        });
+        $('#chartContainer').slideUp();
+
+    });
+</script>
 {% include 'footer.html.twig' %}
